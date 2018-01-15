@@ -19,15 +19,20 @@ void clean(void* data, Rboolean jump)
 extern "C" SEXP longjmp() {
 
   s_token = ::R_MakeUnwindCont();
+  ::R_PreserveObject(s_token);
 
+  SEXP result;
   try
   {
-    return ::R_UnwindProtect(fun, NULL, clean, NULL, s_token);
+    result = PROTECT(::R_UnwindProtect(fun, NULL, clean, NULL, s_token));
   }
   catch (LongjumpException& e)
   {
+    result = PROTECT(Rf_ScalarLogical(0));
   }
 
-  return Rf_ScalarLogical(0);
+  ::R_ReleaseObject(s_token);
+  UNPROTECT(1);
+  return result;
 }
 
