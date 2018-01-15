@@ -32,5 +32,12 @@ ASAN:DEADLYSIGNAL
     #12 0x101464f37 in run_Rmainloop main.c:1082
 ```
 
+The crash seems to be occurring here:
+
+https://github.com/wch/r-source/blob/ee900c7d2c5551e2c1a0e6c21254bf10bb8b92d7/src/main/context.c#L904
+
+which suggests that either `cont` or `R_ReturnedValue` is null -- I suspect
+`R_ReturnedValue` is null here.
+
 Also, the exception is not caught at all using the 32-bit version of R on
 Windows, and the uncaught exception causes a termination of the R process.
