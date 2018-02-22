@@ -28,6 +28,7 @@ extern "C" SEXP longjmp() {
   }
   catch (LongjumpException& e)
   {
+    ::R_ContinueUnwind(s_token);
     result = PROTECT(Rf_ScalarLogical(0));
   }
 
